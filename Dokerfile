@@ -1,0 +1,28 @@
+# Use the official PHP image with composer and extensions
+FROM php:8.2-fpm
+
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    git unzip libpq-dev libzip-dev zip \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy project files
+COPY . .
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Generate application key
+RUN php artisan key:generate
+
+# Expose port 10000 (Render requires it)
+EXPOSE 10000
+
+# Run Laravel app
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
