@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: pet-tag-system
+    env: docker
+    plan: free
+    buildCommand: ""
+    startCommand: "php artisan serve --host 0.0.0.0 --port 10000"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://pet-tag-system.onrender.com
+      - key: DB_CONNECTION
+        value: sqlite
+    dockerfilePath: ./Dockerfile
